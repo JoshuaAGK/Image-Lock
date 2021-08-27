@@ -1,0 +1,9 @@
+* {
+  color: #dab3e5;
+}
+
+body {
+  background-color: #220a2e;
+  display: flex;
+  flex-direction: column;
+}
