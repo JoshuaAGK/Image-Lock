@@ -120,6 +120,8 @@ function handleDateStepper(e) {
 }
 
 function getFormDatetime() {
+    const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
     var days = parseInt(document.getElementById("date-input-days").getElementsByTagName("p")[0].innerHTML);
     var hours = parseInt(document.getElementById("date-input-hours").getElementsByTagName("p")[0].innerHTML);
     var minutes = parseInt(document.getElementById("date-input-minutes").getElementsByTagName("p")[0].innerHTML);
@@ -143,28 +145,15 @@ function getFormDatetime() {
         return result;
     }
 
-    if (days != 0 || hours != 0 || minutes != 0) {
-        date = addDays(date, days);
-        date = addHours(date, hours);
-        date = addMinutes(date, minutes);
-    }
-
-    var returnString = humanDateStringFormat(date.getTime());
-    
-    document.getElementById("unlock-time-label").innerHTML = "Unlocks: <wbr>" + returnString;
-    return date;
-}
-
-function humanDateStringFormat(dateTimestamp) {
-    var date = new Date(dateTimestamp);
-    
-    const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-
     var returnString = "";
 
-    if (false) {
+    if (days == 0 && hours == 0 && minutes == 0) {
         returnString = "Now";
     } else {
+        date = addDays(date, days);
+        date = addHours(date, hours);
+        date = addMinutes(date, minutes)
+
         var newDate = new Date(date);
         var newTimestamp = newDate.getTime();
         var midnightYesterday = new Date().setHours(0, 0, 0, 0);
@@ -217,11 +206,13 @@ function humanDateStringFormat(dateTimestamp) {
         var timeString = hourString + ":" + minuteString + " " + amPm;
         returnString = dateString + " at " + timeString;
     }
-    return returnString;
+
+    document.getElementById("unlock-time-label").innerHTML = "Unlocks: <wbr>" + returnString;
+    return [date, dateString];
 }
 
 function confirmInput() {
-    unlockTimestamp = new Date(getFormDatetime()).getTime();
+    unlockTimestamp = new Date(getFormDatetime()[0]).getTime();
     
     var file = document.querySelector('input[type=file]').files[0];
 	var reader = new FileReader();
@@ -319,15 +310,12 @@ async function displayData() {
             console.log("Image loaded");
             setMain("main-showimage");
             var unlockTimestamp = response.result[0].unlockTime;
-            console.log("Internet timestamp: " + internetTimestamp);
-            console.log("Unlock timestamp: " + unlockTimestamp);
+            console.log(internetTimestamp, unlockTimestamp);
             if (internetTimestamp >= unlockTimestamp) {
                 document.getElementById("main-showimage").getElementsByTagName("img")[0].src = response.result[0].image;
                 document.getElementById("main-showimage").getElementsByTagName("h1")[0].innerHTML = "Your image";
-                document.getElementById("main-showimage").getElementsByClassName("buttonbox-2col")[0].classList.remove("unavailable");
             } else {
-                document.getElementById("main-showimage").getElementsByTagName("h1")[0].innerHTML = "Your image (unlocks " + humanDateStringFormat(unlockTimestamp) + ")";
-                document.getElementById("main-showimage").getElementsByClassName("buttonbox-2col")[0].classList.add("unavailable");
+                document.getElementById("main-showimage").getElementsByTagName("h1")[0].innerHTML = "Your image (locked)";
             }
         }
     }

@@ -1,6 +1,6 @@
 {
-    "name": "PWA Boilerplate",
-    "short_name": "PWA Boilerplate",
+    "name": "Image Locker",
+    "short_name": "Image Locker",
     "start_url": "index.html",
     "display": "standalone",
     "background_color": "#FFFFFF",
