@@ -24,7 +24,7 @@ const MAX_VALS = {
 }
 var begunInterval = false;
 var unlockTimestamp = null;
-const ALWAYS_CONNECT = true // Only set to true for debugging
+const ALWAYS_CONNECT = false // Only set to true for debugging
 worldTimeApiGet();
 
 if (ALWAYS_CONNECT) {
